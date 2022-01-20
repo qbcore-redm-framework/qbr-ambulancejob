@@ -11,6 +11,7 @@ CreateThread(function()
             local ped = PlayerPedId()
             local pos = GetEntityCoords(ped)
             if PlayerJob.name =="ambulance" then
+
                 for k, v in pairs(Config.Locations["duty"]) do
                     local dist = #(pos - vector3(v.x, v.y, v.z))
                     if dist < 5 then
@@ -22,7 +23,7 @@ CreateThread(function()
                                 sleep = 5
                                 DrawText3D(v.x, v.y, v.z, "~g~E~w~ - Go On Duty")
                             end
-                            if IsControlJustReleased(0, 38) then
+                            if IsControlJustReleased(0, 0xCEFD9220) then
                                 onDuty = not onDuty
                                 TriggerServerEvent("QBCore:ToggleDuty")
                             end
@@ -40,7 +41,7 @@ CreateThread(function()
                             if dist < 1.5 then
                                 sleep = 5
                                 DrawText3D(v.x, v.y, v.z, "~g~E~w~ - Armory")
-                                if IsControlJustReleased(0, 38) then
+                                if IsControlJustReleased(0, 0xCEFD9220) then
                                     TriggerServerEvent("inventory:server:OpenInventory", "shop", "hospital", Config.Items)
                                 end
                             elseif dist < 2.5 then
@@ -50,12 +51,73 @@ CreateThread(function()
                         end
                     end
                 end
+                -- Vehicle Menu Test
+                for k, v in pairs(Config.Locations["vehicle"]) do
+                    local dist = #(pos - vector3(v.x, v.y, v.z))
+                    if dist < 4.5 then
+                        sleep = 0
+                        --DrawMarker(2, v.x, v.y, v.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 0, 0, 222, false, false, false, true, false, false, false)
+                        if dist < 1.5 then
+                            if IsPedInAnyVehicle(ped, false) then
+                                DrawText3D(v.x, v.y, v.z, "~g~E~w~ - park vehicle")
+                            else
+                                DrawText3D(v.x, v.y, v.z, "~g~E~w~ - Vehicles")
+                            end
+                            if IsControlJustReleased(0, 0xCEFD9220) then
+                                if IsPedInAnyVehicle(ped, false) then
+                                    QBCore.Functions.DeleteVehicle(GetVehiclePedIsIn(ped))
+                                else
+                                    MenuGarage()
+                                    currentGarage = k
+                                end
+                            end
+                        end
+                    end
+                end
+                -- Test Ende
             end
         else
             sleep = 1000
         end
         Wait(sleep)
     end
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+    PlayerJob = JobInfo
+    TriggerServerEvent("hospital:server:SetDoctor")
+end)
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    exports.spawnmanager:setAutoSpawn(false)
+    local ped = PlayerPedId()
+    local player = PlayerId()
+    TriggerServerEvent("hospital:server:SetDoctor")
+    CreateThread(function()
+        Wait(5000)
+        SetEntityMaxHealth(ped, 200)
+        SetEntityHealth(ped, 200)
+        SetPlayerHealthRechargeMultiplier(player, 0.0)
+        --SetPlayerHealthRechargeLimit(player, 0.0)
+    end)
+    CreateThread(function()
+        Wait(1000)
+        QBCore.Functions.GetPlayerData(function(PlayerData)
+            PlayerJob = PlayerData.job
+            onDuty = PlayerData.job.onduty
+            --SetPedArmour(PlayerPedId(), PlayerData.metadata["armor"])
+            if (not PlayerData.metadata["inlaststand"] and PlayerData.metadata["isdead"]) then
+                deathTime = Laststand.ReviveInterval
+                OnDeath()
+                DeathTimer()
+            elseif (PlayerData.metadata["inlaststand"] and not PlayerData.metadata["isdead"]) then
+                SetLaststand(true, true)
+            else
+                TriggerServerEvent("hospital:server:SetDeathStatus", false)
+                TriggerServerEvent("hospital:server:SetLaststandStatus", false)
+            end
+        end)
+    end)
 end)
 
 RegisterNetEvent('hospital:client:SendAlert')
@@ -243,38 +305,47 @@ AddEventHandler('hospital:client:TreatWounds', function()
     end, 'bandage')
 end)
 
-function MenuGarage(isDown)
-    MenuTitle = "Garage"
-    ClearMenu()
-    Menu.addButton("My vehicles", "VehicleList", isDown)
-    Menu.addButton("Close Menu", "closeMenuFull", nil)
-end
+function MenuGarage()
+    local vehicleMenu = {
+        {
+            header = "Hospital Stable",
+            isMenuHeader = true
+        }
+    }
 
-function VehicleList(isDown)
-    MenuTitle = "Vehicles:"
-    ClearMenu()
-    for k, v in pairs(Config.Vehicles) do
-        Menu.addButton(Config.Vehicles[k], "TakeOutVehicle", {k, isDown}, "Garage", " Engine: 100%", " Body: 100%", " Fuel: 100%")
+    local authorizedVehicles = Config.AuthorizedVehicles[QBCore.Functions.GetPlayerData().job.grade.level]
+    for veh, label in pairs(authorizedVehicles) do
+        vehicleMenu[#vehicleMenu+1] = {
+            header = label,
+            txt = "",
+            params = {
+                event = "ambulance:client:TakeOutVehicle",
+                args = {
+                    vehicle = veh
+                }
+            }
+        }
     end
+    vehicleMenu[#vehicleMenu+1] = {
+        header = "⬅ Close",
+        txt = "",
+        params = {
+            event = "qbr-menu:client:closeMenu"
+        }
 
-    Menu.addButton("Back", "MenuGarage", nil)
+    }
+    exports['qbr-menu']:openMenu(vehicleMenu)
 end
+
+RegisterNetEvent('ambulance:client:TakeOutVehicle', function(data)
+    local vehicle = data.vehicle
+    TakeOutVehicle(vehicle)
+end)
 
 function TakeOutVehicle(vehicleInfo)
     local coords = Config.Locations["vehicle"][currentGarage]
-    QBCore.Functions.SpawnVehicle(vehicleInfo[1], function(veh)
-        SetVehicleNumberPlateText(veh, "AMBU"..tostring(math.random(1000, 9999)))
+    QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
         SetEntityHeading(veh, coords.w)
-        exports['LegacyFuel']:SetFuel(veh, 100.0)
-        closeMenuFull()
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-        TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(veh))
-        SetVehicleEngineOn(veh, true, true)
     end, coords, true)
-end
-
-function closeMenuFull()
-    Menu.hidden = true
-    currentGarage = nil
-    ClearMenu()
 end
