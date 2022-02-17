@@ -10,7 +10,6 @@ local woundsAnim = "bandage_loop"
 metaAnim = false
 
 --[[ Functions ]]--
-
 local function loadAnimDict(dict)
     while (not HasAnimDictLoaded(dict)) do
         RequestAnimDict(dict)
