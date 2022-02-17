@@ -1,207 +1,114 @@
-local deadAnimDict = "dead"
-local deadAnim = "dead_a"
+local QBCore = exports['qbr-core']:GetCoreObject()
 local hold = 5
 deathTime = 0
-
--- Functions
-local function OnDeath(spawn)
+emsNotified = false
+--[[ Functions ]]--
+function OnDeath()
     if not isDead then
         isDead = true
-        TriggerServerEvent("hospital:server:SetDeathStatus", true)
-        TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
-        local player = PlayerPedId()
-
-        while GetEntitySpeed(player) > 0.5 or IsPedRagdoll(player) do
-            Wait(10)
-        end
-
-        if isDead then
-            local pos = GetEntityCoords(player)
-            local heading = GetEntityHeading(player)
-
-
-            NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z + 0.5, heading, true, false)
-            SetEntityInvincible(player, true)
-            SetEntityHealth(player, GetEntityMaxHealth(player))
-            if IsPedInAnyVehicle(player, false) then
-                loadAnimDict("veh@low@front_ps@idle_duck")
-                TaskPlayAnim(player, "veh@low@front_ps@idle_duck", "sit", 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-            else
-                loadAnimDict(deadAnimDict)
-                TaskPlayAnim(player, deadAnimDict, deadAnim, 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-            end
-            TriggerEvent("hospital:client:AiCall")
-        end
+        TriggerServerEvent("hospital:server:SetLaststandStatus", false)
+        TriggerServerEvent("hospital:server:SetDeathStatus", isDead)
+        TriggerServerEvent('hospital:server:ambulanceAlert', Lang:t('info.civ_died'))                
     end
 end
 
-local function DeathTimer()
-    hold = 5
+function DeathTimer()
     while isDead do
-        Wait(1000)
+        Citizen.Wait(1000)
         deathTime = deathTime - 1
-
-        if deathTime <= 0 then
-            if IsControlPressed(0, 38) and hold <= 0 and not isInHospitalBed then
+        if deathTime <= 0 then   
+            if IsControlPressed(0, 0xCEFD9220) and not isInHospitalBed then
                 TriggerEvent("hospital:client:RespawnAtHospital")
-                hold = 5
-            end
-
-            if IsControlPressed(0, 38) then
-                if hold - 1 >= 0 then
-                    hold = hold - 1
-                else
-                    hold = 0
-                end
-            end
-
-            if IsControlReleased(0, 38) then
-                hold = 5
+                return
             end
         end
     end
 end
 
-local function DrawTxt(x, y, width, height, scale, text, r, g, b, a, outline)
-    SetTextFont(4)
-    SetTextProportional(0)
-    SetTextScale(scale, scale)
-    SetTextColour(r, g, b, a)
-    SetTextDropShadow(0, 0, 0, 0,255)
-    SetTextEdge(2, 0, 0, 0, 255)
-    SetTextDropShadow()
-    SetTextOutline()
-    SetTextEntry("STRING")
-    AddTextComponentString(text)
-    DrawText(x - width/2, y - height/2 + 0.005)
+function DrawTxt(str, x, y, w, h, enableShadow, col1, col2, col3, a, centre)
+    local str = CreateVarString(10, "LITERAL_STRING", str)    
+    SetTextScale(w, h)
+    SetTextColor(math.floor(col1), math.floor(col2), math.floor(col3), math.floor(a))
+    SetTextCentre(centre)
+    if enableShadow then SetTextDropshadow(1, 0, 0, 0, 255) end
+    DisplayText(str, x, y)
 end
 
--- Threads
-
+--[[ Threads ]]--
 CreateThread(function()
 	while true do
-		Wait(10)
-		local player = PlayerId()
-		if NetworkIsPlayerActive(player) then
+		local player = PlayerId()     
+		if Citizen.InvokeNative(0xB8DFD30D6973E135, player) then
             local playerPed = PlayerPedId()
-            if IsEntityDead(playerPed) and not InLaststand then
+            if GetEntityHealth(playerPed) <= 0 and not InLaststand then
                 SetLaststand(true)
-            elseif IsEntityDead(playerPed) and InLaststand and not isDead then
-                SetLaststand(false)
-                local killer_2, killerWeapon = NetworkGetEntityKillerOfPlayer(player)
-                local killer = GetPedSourceOfDeath(playerPed)
-
-                if killer_2 ~= 0 and killer_2 ~= -1 then
-                    killer = killer_2
-                end
-
-                local killerId = NetworkGetPlayerIndexFromPed(killer)
-                local killerName = killerId ~= -1 and GetPlayerName(killerId) .. " " .. "("..GetPlayerServerId(killerId)..")" or "Himself or a NPC"
-                local weaponLabel = QBCore.Shared.Weapons?[killerWeapon]?["label"] or "Unknown"
-                local weaponName = QBCore.Shared.Weapons?[killerWeapon]?["name"] or "Unknown_Weapon"
-                TriggerServerEvent("qbr-log:server:CreateLog", "death", GetPlayerName(player) .. " ("..GetPlayerServerId(player)..") is dead", "red", "**".. killerName .. "** has killed ".. GetPlayerName(player) .." with a **".. weaponLabel .. "** (" .. weaponName .. ")")
-                deathTime = Config.DeathTime
-                OnDeath()
-                DeathTimer()
+            end              
+        elseif GetEntityHealth(playerPed) <= 0 and InLaststand and not isDead then
+            deathTime = Config.DeathTime
+            OnDeath()
+            DeathTimer()
+            SetLaststand(false)                
+            local killer_2, killerWeapon = NetworkGetEntityKillerOfPlayer(player)
+            local killer = GetPedSourceOfDeath(playerPed)
+            if killer_2 ~= 0 and killer_2 ~= -1 then
+                killer = killer_2
             end
+            local killerId = NetworkGetPlayerIndexFromPed(killer)
+            local killerName = killerId ~= -1 and GetPlayerName(killerId) .. " " .. "("..GetPlayerServerId(killerId)..")" or Lang:t('info.self_death')
+            local weaponLabel = Lang:t('info.wep_unknown')
+            local weaponName = Lang:t('info.wep_unknown')
+            local weaponItem = QBCore.Shared.Weapons[killerWeapon]
+            if weaponItem then
+                weaponLabel = weaponItem.label
+                weaponName = weaponItem.name
+            end
+            TriggerServerEvent("qbr-log:server:CreateLog", "death", Lang:t('logs.death_log_title', {playername = GetPlayerName(-1), playerid = GetPlayerServerId(player)}), "red", Lang:t('logs.death_log_message', {killername = killerName, playername = GetPlayerName(player), weaponlabel = weaponLabel, weaponname = weaponName}))
 		end
+        Citizen.Wait(1000)
 	end
 end)
 
 CreateThread(function()
 	while true do
         sleep = 1000
-		if isDead or InLaststand then
+		if isDead or InLaststand then            
             sleep = 5
-            local ped = PlayerPedId()
+            local ped = PlayerPedId()            
+            
             DisableAllControlActions(0)
-            EnableControlAction(0, 1, true)
-			EnableControlAction(0, 2, true)
-			EnableControlAction(0, 245, true)
-            EnableControlAction(0, 38, true)
-            EnableControlAction(0, 0, true)
-            EnableControlAction(0, 322, true)
-            EnableControlAction(0, 288, true)
-            EnableControlAction(0, 213, true)
-	        EnableControlAction(0, 249, true)
-            EnableControlAction(0, 46, true)
-
-            if isDead then
+			EnableControlAction(0, 0x9720FCEE, true)   -- T
+            EnableControlAction(0, 0xCEFD9220, true)    -- E
+            EnableControlAction(0, 0x760A9C6F, true)    -- G            
+            
+            if isDead then              
                 if not isInHospitalBed then
                     if deathTime > 0 then
-                        DrawTxt(0.93, 1.44, 1.0,1.0,0.6, "RESPAWN IN: ~r~" .. math.ceil(deathTime) .. "~w~ SECONDS", 255, 255, 255, 255)
-                    else
-                        DrawTxt(0.865, 1.44, 1.0, 1.0, 0.6, "~w~ HOLD ~r~[E] ("..hold..")~w~ TO RESPAWN ~r~($"..Config.BillCost..")~w~", 255, 255, 255, 255)
+                        DrawTxt(Lang:t('info.respawn_txt', {deathtime = math.ceil(deathTime)}), 0.50, 0.80, 0.5, 0.5, true, 255, 0, 0, 200, true)
+                    else                        
+                        DrawTxt(Lang:t('info.respawn_revive', {cost = Config.BillCost}), 0.50, 0.80, 0.5, 0.5, true, 255, 0, 0, 200, true)
                     end
                 end
-
-                if IsPedInAnyVehicle(ped, false) then
-                    loadAnimDict("veh@low@front_ps@idle_duck")
-                    if not IsEntityPlayingAnim(ped, "veh@low@front_ps@idle_duck", "sit", 3) then
-                        TaskPlayAnim(ped, "veh@low@front_ps@idle_duck", "sit", 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-                    end
-                else
-                    if isInHospitalBed then
-                        if not IsEntityPlayingAnim(ped, inBedDict, inBedAnim, 3) then
-                            loadAnimDict(inBedDict)
-                            TaskPlayAnim(ped, inBedDict, inBedAnim, 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-                        end
-                    else
-                        if not IsEntityPlayingAnim(ped, deadAnimDict, deadAnim, 3) then
-                            loadAnimDict(deadAnimDict)
-                            TaskPlayAnim(ped, deadAnimDict, deadAnim, 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-                        end
-                    end
-                end
-
-                SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+                SetCurrentPedWeapon(ped, GetHashKey("weapon_unarmed"))           
             elseif InLaststand then
                 sleep = 5
-                DisableAllControlActions(0)
-                EnableControlAction(0, 1, true)
-                EnableControlAction(0, 2, true)
-                EnableControlAction(0, 245, true)
-                EnableControlAction(0, 38, true)
-                EnableControlAction(0, 0, true)
-                EnableControlAction(0, 322, true)
-                EnableControlAction(0, 288, true)
-                EnableControlAction(0, 213, true)
-		        EnableControlAction(0, 249, true)
-                EnableControlAction(0, 46, true)
 
-                if LaststandTime > Config.LaststandMinimumRevive then
-                    DrawTxt(0.94, 1.44, 1.0, 1.0, 0.6, "YOU WILL BLEED OUT IN: ~r~" .. math.ceil(LaststandTime) .. "~w~ SECONDS", 255, 255, 255, 255)
+                if LaststandTime > Laststand.MinimumRevive then
+                    DrawTxt(Lang:t('info.bleed_out', {time = math.ceil(LaststandTime)}), 0.50, 0.80, 0.5, 0.5, true, 255, 255, 255, 200, true)
                 else
-                    DrawTxt(0.845, 1.44, 1.0, 1.0, 0.6, "YOU WILL BLEED OUT IN: ~r~" .. math.ceil(LaststandTime) .. "~w~ SECONDS, YOU CAN BE HELPED", 255, 255, 255, 255)
-                end
-
-                if not isEscorted then
-                    if IsPedInAnyVehicle(ped, false) then
-                        loadAnimDict("veh@low@front_ps@idle_duck")
-                        if not IsEntityPlayingAnim(ped, "veh@low@front_ps@idle_duck", "sit", 3) then
-                            TaskPlayAnim(ped, "veh@low@front_ps@idle_duck", "sit", 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-                        end
+                    DrawTxt(Lang:t('info.bleed_out_help', {time = math.ceil(LaststandTime)}), 0.50, 0.80, 0.5, 0.5, true, 255, 255, 255, 200, true)
+                    if not emsNotified then
+                        DrawTxt(Lang:t('info.request_help'), 0.50, 0.85, 0.5, 0.5, true, 255, 255, 255, 200, true)
                     else
-                        loadAnimDict(lastStandDict)
-                        if not IsEntityPlayingAnim(ped, lastStandDict, lastStandAnim, 3) then
-                            TaskPlayAnim(ped, lastStandDict, lastStandAnim, 1.0, 1.0, -1, 1, 0, 0, 0, 0)
-                        end
+                        DrawTxt(Lang:t('info.help_requested'), 0.50, 0.85, 0.5, 0.5, true, 255, 255, 255, 200, true)
                     end
-                else
-                    if IsPedInAnyVehicle(ped, false) then
-                        loadAnimDict("veh@low@front_ps@idle_duck")
-                        if IsEntityPlayingAnim(ped, "veh@low@front_ps@idle_duck", "sit", 3) then
-                            StopAnimTask(ped, "veh@low@front_ps@idle_duck", "sit", 3)
-                        end
-                    else
-                        loadAnimDict(lastStandDict)
-                        if IsEntityPlayingAnim(ped, lastStandDict, lastStandAnim, 3) then
-                            StopAnimTask(ped, lastStandDict, lastStandAnim, 3)
-                        end
+
+                    if IsControlJustPressed(0, 0x760A9C6F) and not emsNotified then
+                        TriggerServerEvent('hospital:server:ambulanceAlert', Lang:t('info.civ_down'))
+                        emsNotified = true
                     end
                 end
             end
-		end
-        Wait(sleep)
+		end        
+        Citizen.Wait(sleep)
 	end
 end)

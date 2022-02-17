@@ -1,60 +1,85 @@
 Config = {}
 
 Config.MinimalDoctors = 2
-Config.WipeInventoryOnRespawn = true
+Config.WipeInventoryOnRespawn = false
+Config.DispatchTimer = 180 --DispatchTimer*4
+Config.PromptKey = 0xE30CD707 -- R
+Config.BillCost = 10
+Config.DeathTime = 10
+Config.CheckTime = 10
+Config.PainkillerInterval = 60 -- seconds
 
 Config.Locations = {
-    ["checking"] = vector4(-286.28, 804.77, 119.38, 104.89), -- Valentine
+    ["checking"] = {
+	    [1] = vector3(-286.28, 804.77, 119.3), -- Valentine
+	    [2] = vector3(2718.59, -1233.66, 50.36), -- Saint Denis
+    },
     ["duty"] = {
-        [1] = vector4(-284.49, 807.49, 119.38, 5.67),   -- Valentine
-        [2] = vector4(-254.88, 6324.5, 32.58, 0.0),     -- not used yet
-    },    
+        [1] = vector3(-284.49, 807.49, 119.38), -- Valentine
+        [2] = vector3(2726.7, -1232.05, 50.36), -- Saint Denis
+        [3] = vector3(-3650.37, -2645.63, -13.45), -- Armadillo
+    },
     ["vehicle"] = {
         [1] = vector4(-387.12, 775.3, 115.79, 189.93), -- Valentine Stable
         [2] = vector4(-293.36, 788.99, 118.47, 99.22), -- Test in Valentine
-    },    
+        [3] = vector4(-3666.87, -2643.86, -13.75, 280.63), -- Armadillo        
+    },
     ["armory"] = {
-        [1] = vector4(-289.913, 816.26, 119.38, 8.51), -- Valentine 
-    },        
+        [1] = vector3(-289.913, 816.26, 119.38), -- Valentine 
+        [2] = vector3(2730.6, -1229.19, 50.36), -- Saint Denis         
+        [3] = vector3(-3651.38, -2653.74, -13.45), -- Armadillo
+    },
+    ["stash"] = {
+        [1] = vector3(-288.79, 808.83, 119.38), -- Valentine
+        [2] = vector3(2730.31, -1232.13, 50.36), -- Saint Denis        
+    },
     ["beds"] = {
         [1] = {coords = vector4(-282.19, 814.46, 118.9, 96.10), taken = false, model = -2121768533}, -- Valentine 1
         [2] = {coords = vector4(-284.01, 813.39, 118.9, 5.67), taken = false, model = -2121768533}, -- Valentine 2
+        [3] = {coords = vector4(2724.73, -1224.15, 50.36, 0.0), taken = false, model = 4432898}, -- Saint Denis 1 inhouse mapping problems known! /stream/SaintDenis.ymap
+        [4] = {coords = vector4(2725.61, -1230.47, 50.36, 0.0), taken = false, model = 4432898}, -- Saint Denis 2 inhouse mapping problems known! /stream/SaintDenis.ymap
+        [5] = {coords = vector4(-3655.04, -2645.26, -14.46, -94.0), taken = false, model = 247554}, -- Armadillo Custom Dotcors Office /stream/Armadillo.ymap
+        [6] = {coords = vector4(-3654.89, -2650.54, -14.46, -94.0), taken = false, model = 247554}, -- Armadillo Custom Dotcors Office /stream/Armadillo.ymap
     },
     ["stations"] = {
-        [1] = {label = "Valentine Hospital", coords = vector4(-286.28, 804.77, 119.38, 104.89)}
+        [1] = {label = Lang:t('info.v_hospital'), coords = vector4(-284.49, 807.49, 119.38, 104.89)}, -- Valentine
+        [2] = {label = Lang:t('info.sd_hospital'), coords = vector4(2726.7, -1232.05, 50.36, 104.89)}, -- Saint Denis
+        [3] = {label = Lang:t('info.a_hospital'), coords = vector4(-3651.82, -2649.4, -13.45, 99.22)}, -- Armadillo
     }
 }
+
 Config.AuthorizedVehicles = {
 	-- Grade 0
 	[0] = {
-		["CHUCKWAGON000X"] = "Chuckwagon",
+		["CHUCKWAGON000X"] = "CHUCKWAGON000X",
 	},
 	-- Grade 1
 	[1] = {
-		["CHUCKWAGON000X"] = "Chuckwagon",
+		["CHUCKWAGON000X"] = "CHUCKWAGON000X",
+
 	},
 	-- Grade 2
 	[2] = {
-		["CHUCKWAGON000X"] = "Chuckwagon",
+		["CHUCKWAGON000X"] = "CHUCKWAGON000X",
 	},
 	-- Grade 3
 	[3] = {
-		["CHUCKWAGON000X"] = "Chuckwagon",
+		["CHUCKWAGON000X"] = "CHUCKWAGON000X",
 	},
 	-- Grade 4
 	[4] = {
-		["CHUCKWAGON000X"] = "Chuckwagon",
+		["CHUCKWAGON000X"] = "CHUCKWAGON000X",
 	}
 }
 
 Config.Items = {
-    label = "Hospital safe",
+    label = Lang:t('info.safe'),
     slots = 30,
     items = {
         [1] = {
             name = "bandage",
             price = 0,
-            amount = 50,
+            amount = 20,
             info = {},
             type = "item",
             slot = 1,
@@ -62,28 +87,27 @@ Config.Items = {
         [2] = {
             name = "painkillers",
             price = 0,
-            amount = 50,
+            amount = 10,
             info = {},
             type = "item",
             slot = 2,
-        }
+        },
+        [3] = {
+            name = "firstaid",
+            price = 0,
+            amount = 10,
+            info = {},
+            type = "item",
+            slot = 3,
+        },
     }
 }
-
-Config.BillCost = 200
-Config.DeathTime = 300
-Config.CheckTime = 10
-
-Config.PainkillerInterval = 60 -- seconds
-
-Config.LaststandReviveInterval = 360 -- seconds
-Config.LaststandMinimumRevive = 300 -- seconds
 
 --[[
     GENERAL SETTINGS | THESE WILL AFFECT YOUR ENTIRE SERVER SO BE SURE TO SET THESE CORRECTLY
     MaxHp : Maximum HP Allowed, set to -1 if you want to disable mythic_hospital from setting this
         NOTE: Anything under 100 and you are dead
-    RegenRate : 
+    RegenRate :
 ]]
 Config.MaxHp = 200
 Config.RegenRate = 0.0
@@ -113,7 +137,7 @@ Config.MessageTimer = 12
 ]]
 Config.AIHealTimer = 20
 
---[[ 
+--[[
     BleedTickRate : How much time, in seconds, between bleed ticks
 ]]
 Config.BleedTickRate = 30
@@ -170,7 +194,7 @@ Config.MajorArmoredBleedChance = 45
 Config.DamageMinorToMajor = 35
 
 --[[
-    AlertShowInfo : 
+    AlertShowInfo :
 ]]
 Config.AlertShowInfo = 2
 
@@ -181,7 +205,7 @@ Config.AlertShowInfo = 2
     MinorInjurWeapons : Damage From These Weapons Will Apply Only Minor Injuries
     MajorInjurWeapons : Damage From These Weapons Will Apply Only Major Injuries
     AlwaysBleedChanceWeapons : Weapons that're in the included weapon classes will roll for a chance to apply a bleed effect if the damage wasn't enough to trigger an injury chance
-    CriticalAreas : 
+    CriticalAreas :
     StaggerAreas : These are the body areas that would cause a stagger is hit by firearms,
         Table Values: Armored = Can This Cause Stagger If Wearing Armor, Major = % Chance You Get Staggered By Major Damage, Minor = % Chance You Get Staggered By Minor Damage
 ]]
@@ -247,17 +271,17 @@ Config.StaggerAreas = {
 }
 
 Config.WoundStates = {
-    'irritated',
-    'quite painful',
-    'painful',
-    'really painful',
+    Lang:t('states.irritated'),
+    Lang:t('states.quite_painful'),
+    Lang:t('states.painful'),
+    Lang:t('states.really_painful'),
 }
 
 Config.BleedingStates = {
-    [1] = {label = 'bleeding a little bit..', damage = 10, chance = 50},
-    [2] = {label = 'bleeding..', damage = 15, chance = 65},
-    [3] = {label = 'bleeding a lot..', damage = 20, chance = 65},
-    [4] = {label = 'bleeding very much..', damage = 25, chance = 75},
+    [1] = {label = Lang:t('states.little_bleed'), damage = 10, chance = 50},
+    [2] = {label = Lang:t('states.bleed'), damage = 15, chance = 65},
+    [3] = {label = Lang:t('states.lot_bleed'), damage = 20, chance = 65},
+    [4] = {label = Lang:t('states.big_bleed'), damage = 25, chance = 75},
 }
 
 Config.MovementRate = {
@@ -269,237 +293,251 @@ Config.MovementRate = {
 
 Config.Bones = {
     [0]     = 'NONE',
-    [31085] = 'HEAD',
-    [31086] = 'HEAD',
-    [39317] = 'NECK',
-    [57597] = 'SPINE',
-    [23553] = 'SPINE',
-    [24816] = 'SPINE',
-    [24817] = 'SPINE',
-    [24818] = 'SPINE',
-    [10706] = 'UPPER_BODY',
-    [64729] = 'UPPER_BODY',
-    [11816] = 'LOWER_BODY',
-    [45509] = 'LARM',
-    [61163] = 'LARM',
-    [18905] = 'LHAND',
-    [4089] = 'LFINGER',
-    [4090] = 'LFINGER',
-    [4137] = 'LFINGER',
-    [4138] = 'LFINGER',
-    [4153] = 'LFINGER',
-    [4154] = 'LFINGER',
-    [4169] = 'LFINGER',
-    [4170] = 'LFINGER',
-    [4185] = 'LFINGER',
-    [4186] = 'LFINGER',
-    [26610] = 'LFINGER',
-    [26611] = 'LFINGER',
-    [26612] = 'LFINGER',
-    [26613] = 'LFINGER',
-    [26614] = 'LFINGER',
-    [58271] = 'LLEG',
-    [63931] = 'LLEG',
-    [2108] = 'LFOOT',
-    [14201] = 'LFOOT',
-    [40269] = 'RARM',
-    [28252] = 'RARM',
-    [57005] = 'RHAND',
-    [58866] = 'RFINGER',
-    [58867] = 'RFINGER',
-    [58868] = 'RFINGER',
-    [58869] = 'RFINGER',
-    [58870] = 'RFINGER',
-    [64016] = 'RFINGER',
-    [64017] = 'RFINGER',
-    [64064] = 'RFINGER',
-    [64065] = 'RFINGER',
-    [64080] = 'RFINGER',
-    [64081] = 'RFINGER',
-    [64096] = 'RFINGER',
-    [64097] = 'RFINGER',
-    [64112] = 'RFINGER',
-    [64113] = 'RFINGER',
-    [36864] = 'RLEG',
-    [51826] = 'RLEG',
-    [20781] = 'RFOOT',
-    [52301] = 'RFOOT',
+    -- HEAD
+    [27981] = 'HEAD',
+    [57278] = 'HEAD',
+    [54890] = 'HEAD',
+    [21030] = 'HEAD',
+    -- NECK
+    [24015] = 'NECK',
+    [52596] = 'NECK',
+    [32630] = 'NECK',
+	[32631] = 'NECK',
+	[32632] = 'NECK',
+    [14283] = 'NECK',
+	[14284] = 'NECK',
+	[14285] = 'NECK',	 
+    -- SPINE/&
+    [14410] = 'SPINE',
+    [14411] = 'SPINE',
+	[14412] = 'SPINE',
+	[14413] = 'SPINE',
+	[14414] = 'SPINE',    
+    --UPPER_BODY
+    [30226] = 'UPPER_BODY',
+    -- LOWER_BODY
+    [56200] = 'LOWER_BODY',
+    -- LARM
+    [43700] = 'LARM',
+    [24238] = 'LARM',
+    [55540] = 'LARM',
+    [53562] = 'LARM',
+    [53675] = 'LARM',    
+    -- LHAND
+    [34606] = 'LHAND',
+    -- LFINGER
+    [41403] = 'LFINGER',
+    [41404] = 'LFINGER',
+    [41405] = 'LFINGER',
+    [41323] = 'LFINGER',
+    [41324] = 'LFINGER',
+    [41325] = 'LFINGER',
+    [41326] = 'LFINGER',
+    [41307] = 'LFINGER',
+    [41308] = 'LFINGER',
+    [41309] = 'LFINGER',
+    [41310] = 'LFINGER',
+    [41355] = 'LFINGER',
+    [41356] = 'LFINGER',
+    [41357] = 'LFINGER',
+    [41358] = 'LFINGER',
+    [41339] = 'LFINGER',
+    [41340] = 'LFINGER',
+    [41341] = 'LFINGER',
+    [41342] = 'LFINGER',
+    [35940] = 'LFINGER',
+	[43154] = 'LFINGER',
+	[60440] = 'LFINGER',
+	[35924] = 'LFINGER',
+	[35908] = 'LFINGER',
+	[35892] = 'LFINGER',
+	[35876] = 'LFINGER',
+	[55214] = 'LFINGER',
+	[55198] = 'LFINGER',
+	[55246] = 'LFINGER',
+	[55230] = 'LFINGER',
+    -- LLEG
+    [40091] = 'LLEG',
+    [52390] = 'LLEG',
+	[65480] = 'LLEG',
+	[21174] = 'LLEG',
+	[49844] = 'LLEG',
+	[38229] = 'LLEG',
+	[51618] = 'LLEG',
+	[17816] = 'LLEG',
+    [21124] = 'LLEG',
+	[12785] = 'LLEG',
+	[881] = 'LLEG',
+	[65034] = 'LLEG',
+	[62433] = 'LLEG',
+	[8936] = 'LLEG',
+	[2474] = 'LLEG',
+	[8980] = 'LLEG',
+    [55253] = 'LLEG',
+	[15681] = 'LLEG',
+    [12865] = 'LLEG',
+    [3003] = 'LLEG',
+    [65478] = 'LLEG',
+    [55120] = 'LLEG',
+    -- LFOOT
+    [45454] = 'LFOOT',    
+    -- RARM
+    [54187] = 'RARM',
+    [46065] = 'RARM',
+    [46260] = 'RARM',
+    [65198] = 'RARM',
+    [31186] = 'RARM',
+    -- RHAND    
+    [22798] = 'RHAND',
+    -- RFINGER
+    [16827] = 'RFINGER',
+	[16828] = 'RFINGER',
+	[16829] = 'RFINGER',
+	[16747] = 'RFINGER',
+	[16748] = 'RFINGER',
+	[16749] = 'RFINGER',
+	[16750] = 'RFINGER',
+	[16731] = 'RFINGER',
+	[16732] = 'RFINGER',
+	[16733] = 'RFINGER',
+	[16734] = 'RFINGER',
+	[16779] = 'RFINGER',
+	[16780] = 'RFINGER',
+	[16781] = 'RFINGER',
+	[16782] = 'RFINGER',
+	[16763] = 'RFINGER',
+	[16764] = 'RFINGER',
+	[16765] = 'RFINGER',
+	[16766] = 'RFINGER',
+    [11364] = 'RFINGER',
+	[41618] = 'RFINGER',
+	[14992] = 'RFINGER',
+	[11348] = 'RFINGER',
+	[11332] = 'RFINGER',
+	[11316] = 'RFINGER',
+	[11300] = 'RFINGER',
+	[61341] = 'RFINGER',
+	[61325] = 'RFINGER',
+	[61373] = 'RFINGER',
+	[61357] = 'RFINGER',
+	[36407] = 'RFINGER',
+    -- RLEG
+    [64298] = 'RLEG',
+	[27814] = 'RLEG',
+	[65384] = 'RLEG',
+	[19638] = 'RLEG',
+	[6170] = 'RLEG',
+	[17720] = 'RLEG',
+    [22660] = 'RLEG',
+	[10571] = 'RLEG',
+	[64874] = 'RLEG',
+	[30131] = 'RLEG',
+	[46712] = 'RLEG',
+	[53296] = 'RLEG',
+	[14866] = 'RLEG',
+    [31046] = 'RLEG',
+	[11991] = 'RLEG',
+    [10651] = 'RLEG',
+    [5217] = 'RLEG',
+    [6884] = 'RLEG',
+    -- RFOOT
+    [33646] = 'RFOOT',
 }
 
 Config.BoneIndexes = {
     ['NONE'] = 0,
-    ['HEAD'] = 31085,
-    ['HEAD'] = 31086,
-    ['NECK'] = 39317, 
-    ['SPINE'] = 57597,
-    ['SPINE'] = 23553,
-    ['SPINE'] = 24816,
-    ['SPINE'] = 24817,
-    ['SPINE'] = 24818,
-    ['UPPER_BODY'] = 10706,
-    ['UPPER_BODY'] = 64729,
-    ['LOWER_BODY'] = 11816,
-    ['LARM'] = 45509,
-    ['LARM'] = 61163,
-    ['LHAND'] = 18905,
-    ['LFINGER'] = 4089,
-    ['LFINGER'] = 4090,
-    ['LFINGER'] = 4137,
-    ['LFINGER'] = 4138,
-    ['LFINGER'] = 4153,
-    ['LFINGER'] = 4154,
-    ['LFINGER'] = 4169,
-    ['LFINGER'] = 4170,
-    ['LFINGER'] = 4185,
-    ['LFINGER'] = 4186,
-    ['LFINGER'] = 26610,
-    ['LFINGER'] = 26611,
-    ['LFINGER'] = 26612,
-    ['LFINGER'] = 26613,
-    ['LFINGER'] = 26614,
-    ['LLEG'] = 58271,
-    ['LLEG'] = 63931,
-    ['LFOOT'] = 2108,
-    ['LFOOT'] = 14201,
-    ['RARM'] = 40269,
-    ['RARM'] = 28252,
-    ['RHAND'] = 57005,
-    ['RFINGER'] = 58866,
-    ['RFINGER'] = 58867,
-    ['RFINGER'] = 58868,
-    ['RFINGER'] = 58869,
-    ['RFINGER'] = 58870,
-    ['RFINGER'] = 64016,
-    ['RFINGER'] = 64017,
-    ['RFINGER'] = 64064,
-    ['RFINGER'] = 64065,
-    ['RFINGER'] = 64080,
-    ['RFINGER'] = 64081,
-    ['RFINGER'] = 64096,
-    ['RFINGER'] = 64097,
-    ['RFINGER'] = 64112,
-    ['RFINGER'] = 64113,
-    ['RLEG'] = 36864,
-    ['RLEG'] = 51826,
-    ['RFOOT'] = 20781,
-    ['RFOOT'] = 52301,
+    ['HEAD'] = 21030, -- SKEL_HEAD
+    ['NECK'] = 14284, -- SKEL_NECK1
+    ['SPINE'] = 14413, -- SKEL_SPINE3
+    ['UPPER_BODY'] = 30226, --SKEL_L_Clavicle
+    ['LOWER_BODY'] = 56200, --SKEL_Pelvis
+    ['LARM'] = 53675, --skel_l_forearm
+    ['LHAND'] = 34606, --skel_l_hand
+    ['LFINGER'] = 41339, --SKEL_L_Finger40
+    ['LLEG'] = 55120, --SKEL_L_Calf
+    ['LFOOT'] = 45454, --SKEL_L_Foot
+    ['RARM'] = 54187, --skel_r_forearm
+    ['RHAND'] = 22798, --skel_r_hand
+    ['RFINGER'] = 16733, --SKEL_R_Finger22
+    ['RLEG'] = 6884, --SKEL_R_Thigh
+    ['RFOOT'] = 33646, --SKEL_R_Foot
 }
 
-Config.Weapons = {
-    [`WEAPON_STUNGUN`] = Config.WeaponClasses['NONE'],
+Config.Weapons = {    
     --[[ Small Caliber ]]--
-    [`WEAPON_PISTOL`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_COMBATPISTOL`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_APPISTOL`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_COMBATPDW`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_MACHINEPISTOL`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_MICROSMG`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_MINISMG`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_PISTOL_MK2`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_SNSPISTOL`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_SNSPISTOL_MK2`] = Config.WeaponClasses['SMALL_CALIBER'],
-    [`WEAPON_VINTAGEPISTOL`] = Config.WeaponClasses['SMALL_CALIBER'],
+    [`WEAPON_REVOLVER_CATTLEMAN`] = Config.WeaponClasses['SMALL_CALIBER'],
+    [`WEAPON_REVOLVER_CATTLEMAN_MEXICAN`] = Config.WeaponClasses['SMALL_CALIBER'],
+    [`WEAPON_REVOLVER_DOUBLEACTION_GAMBLER`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_REVOLVER_SCHOFIELD`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_REVOLVER_LEMAT`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_REVOLVER_NAVY`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_PISTOL_VOLCANIC`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_PISTOL_M1899`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_PISTOL_MAUSER`] = Config.WeaponClasses['SMALL_CALIBER'],
+	[`WEAPON_PISTOL_SEMIAUTO`] = Config.WeaponClasses['SMALL_CALIBER'],
+    --[[ MEDIUM_CALIBER ]]--
+    [`WEAPON_REPEATER_CARBINE`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_REPEATER_WINCHESTER`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_REPEATER_HENRY`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_REPEATER_EVANS`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_RIFLE_VARMINT`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_RIFLE_SPRINGFIELD`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_RIFLE_BOLTACTION`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+	[`WEAPON_RIFLE_ELEPHANT`] = Config.WeaponClasses['MEDIUM_CALIBER'],
+    --[[ 'HIGH_CALIBER' ]]--
+    [`WEAPON_SNIPERRIFLE_ROLLINGBLOCK`] = Config.WeaponClasses['HIGH_CALIBER'],
+	[`WEAPON_SNIPERRIFLE_ROLLINGBLOCK_EXOTIC`] = Config.WeaponClasses['HIGH_CALIBER'],
+	[`WEAPON_SNIPERRIFLE_CARCANO`] = Config.WeaponClasses['HIGH_CALIBER'],
+    --[[ 'SHOTGUN' ]]--
+    [`WEAPON_SHOTGUN_DOUBLEBARREL`] = Config.WeaponClasses['SHOTGUN'],
+	[`WEAPON_SHOTGUN_DOUBLEBARREL_EXOTIC`] = Config.WeaponClasses['SHOTGUN'],
+	[`WEAPON_SHOTGUN_SAWEDOFF`] = Config.WeaponClasses['SHOTGUN'],
+	[`WEAPON_SHOTGUN_SEMIAUTO`] = Config.WeaponClasses['SHOTGUN'],
+    --[[ 'CUTTING' ]]--
+    [`WEAPON_BOW`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_BOW_IMPROVED`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_LASSO`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_LASSO_REINFORCED`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_KNIFE`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_KNIFE_JAWBONE`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_HAMMER`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_THROWN_DYNAMITE`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_THROWN_MOLOTOV`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_THROWN_THROWING_KNIVES`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_THROWN_TOMAHAWK`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_THROWN_TOMAHAWK_ANCIENT`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_THROWN_BOLAS`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_CLEAVER`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_LANTERN`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_DAVY_LANTERN`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_TORCH`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_HATCHET`] = Config.WeaponClasses['CUTTING'],
+	[`WEAPON_MELEE_MACHETE`] = Config.WeaponClasses['CUTTING'],
+    --[[ 'LIGHT_IMPACT' ]]--
+    --[[ 'HEAVY_IMPACT' ]]--
+    --[[ 'EXPLOSIVE' ]]--
+    --[[ 'FIRE' ]]--
+    --[[ 'SUFFOCATING' ]]--
+    --[[ 'OTHER' ]]--
+    --[[ 'WILDLIFE' ]]--
+    --[[ 'NOTHING' ]]--
+}
 
-    --[[ Medium Caliber ]]--
-    [`WEAPON_ADVANCEDRIFLE`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_ASSAULTSMG`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_BULLPUPRIFLE`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_BULLPUPRIFLE_MK2`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_CARBINERIFLE`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_CARBINERIFLE_MK2`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_COMPACTRIFLE`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_DOUBLEACTION`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_GUSENBERG`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_HEAVYPISTOL`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_MARKSMANPISTOL`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_PISTOL50`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_REVOLVER`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_REVOLVER_MK2`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_SMG`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_SMG_MK2`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_SPECIALCARBINE`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-    [`WEAPON_SPECIALCARBINE_MK2`] = Config.WeaponClasses['MEDIUM_CALIBER'],
-
-    --[[ High Caliber ]]--
-    [`WEAPON_ASSAULTRIFLE`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_ASSAULTRIFLE_MK2`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_COMBATMG`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_COMBATMG_MK2`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_HEAVYSNIPER`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_HEAVYSNIPER_MK2`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_MARKSMANRIFLE`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_MARKSMANRIFLE_MK2`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_MG`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_MINIGUN`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_MUSKET`] = Config.WeaponClasses['HIGH_CALIBER'],
-    [`WEAPON_RAILGUN`] = Config.WeaponClasses['HIGH_CALIBER'],
-
-    --[[ Shotguns ]]--
-    [`WEAPON_ASSAULTSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_BULLUPSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_DBSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_HEAVYSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_PUMPSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_PUMPSHOTGUN_MK2`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_SAWNOFFSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-    [`WEAPON_SWEEPERSHOTGUN`] = Config.WeaponClasses['SHOTGUN'],
-
-    --[[ Animals ]]--
-    [`WEAPON_ANIMAL`] = Config.WeaponClasses['WILDLIFE'], -- Animal
-    [`WEAPON_COUGAR`] = Config.WeaponClasses['WILDLIFE'], -- Cougar
-    [`WEAPON_BARBED_WIRE`] = Config.WeaponClasses['WILDLIFE'], -- Barbed Wire
-    
-    --[[ Cutting Weapons ]]--
-    [`WEAPON_BATTLEAXE`] = Config.WeaponClasses['CUTTING'],
-    [`WEAPON_BOTTLE`] = Config.WeaponClasses['CUTTING'],
-    [`WEAPON_DAGGER`] = Config.WeaponClasses['CUTTING'],
-    [`WEAPON_HATCHET`] = Config.WeaponClasses['CUTTING'],
-    [`WEAPON_KNIFE`] = Config.WeaponClasses['CUTTING'],
-    [`WEAPON_MACHETE`] = Config.WeaponClasses['CUTTING'],
-    [`WEAPON_SWITCHBLADE`] = Config.WeaponClasses['CUTTING'],
-
-    --[[ Light Impact ]]--
-    [`WEAPON_KNUCKLE`] = Config.WeaponClasses['LIGHT_IMPACT'],
-    
-    --[[ Heavy Impact ]]--
-    [`WEAPON_BAT`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_CROWBAR`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_FIREEXTINGUISHER`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_FIRWORK`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_GOLFLCUB`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_HAMMER`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_PETROLCAN`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_POOLCUE`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_WRENCH`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_RAMMED_BY_CAR`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    [`WEAPON_RUN_OVER_BY_CAR`] = Config.WeaponClasses['HEAVY_IMPACT'],
-    
-    --[[ Explosives ]]--
-    [`WEAPON_EXPLOSION`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_GRENADE`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_COMPACTLAUNCHER`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_HOMINGLAUNCHER`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_PIPEBOMB`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_PROXMINE`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_RPG`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_STICKYBOMB`] = Config.WeaponClasses['EXPLOSIVE'],
-    [`WEAPON_HELI_CRASH`] = Config.WeaponClasses['EXPLOSIVE'],
-    
-    --[[ Other ]]--
-    [`WEAPON_FALL`] = Config.WeaponClasses['OTHER'], -- Fall
-    [`WEAPON_HIT_BY_WATER_CANNON`] = Config.WeaponClasses['OTHER'], -- Water Cannon
-    
-    --[[ Fire ]]--
-    [`WEAPON_ELECTRIC_FENCE`] = Config.WeaponClasses['FIRE'],
-    [`WEAPON_FIRE`] = Config.WeaponClasses['FIRE'],
-    [`WEAPON_MOLOTOV`] = Config.WeaponClasses['FIRE'],
-    [`WEAPON_FLARE`] = Config.WeaponClasses['FIRE'],
-    [`WEAPON_FLAREGUN`] = Config.WeaponClasses['FIRE'],
-
-    --[[ Suffocate ]]--
-    [`WEAPON_DROWNING`] = Config.WeaponClasses['SUFFOCATING'], -- Drowning
-    [`WEAPON_DROWNING_IN_VEHICLE`] = Config.WeaponClasses['SUFFOCATING'], -- Drowning Veh
-    [`WEAPON_EXHAUSTION`] = Config.WeaponClasses['SUFFOCATING'], -- Exhaust
-    [`WEAPON_BZGAS`] = Config.WeaponClasses['SUFFOCATING'],
-    [`WEAPON_SMOKEGRENADE`] = Config.WeaponClasses['SUFFOCATING'],
+Config.VehicleSettings = {
+    ["CHUCKWAGON000X"] = { -- Model name
+        ["extras"] = {
+            ["1"] = false, -- on/off
+            ["2"] = false,
+            ["3"] = false,
+            ["4"] = false,
+            ["5"] = false,
+            ["6"] = false,
+            ["7"] = false,
+            ["8"] = false,
+            ["9"] = false,
+            ["10"] = false,
+            ["11"] = false,
+            ["12"] = false,
+        }
+    }
 }
