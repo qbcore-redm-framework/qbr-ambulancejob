@@ -125,7 +125,7 @@ function createAmbuPrompts()
         })        
     end
     for k, v in pairs(Config.Locations["beds"]) do
-        exports['qbr-prompts']:createPrompt("ambulance:bed:"..k, vector3(Config.Locations["beds"][k].coords.x, Config.Locations["beds"][k].coords.y, Config.Locations["beds"][k].coords.z), Config.PromptKey, Lang:t('text.lie_bed', {cost=Config.BillCost}), {
+        exports['qbr-prompts']:createPrompt("ambulance:bed:"..k, vector3(Config.Locations["beds"][k].coords.x, Config.Locations["beds"][k].coords.y, Config.Locations["beds"][k].coords.z), Config.PromptKey, Lang:t('text.lie_bed',{cost = Config.BillCost}), {
             type = 'client',
             event = 'ambulance:client:promptBed',
         })
@@ -162,6 +162,7 @@ RegisterNetEvent('ambulance:client:promptVehicle', function(k)
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
         onDuty = PlayerData.job.onduty
+        local ped = PlayerPedId()				
         if PlayerJob.name == "ambulance"  then
             if IsPedInAnyVehicle(ped, false) then
                 QBCore.Functions.DeleteVehicle(GetVehiclePedIsIn(ped))
