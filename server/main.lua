@@ -34,7 +34,7 @@ RegisterNetEvent('hospital:server:RespawnAtHospital', function(closestBed)
 		if Config.WipeInventoryOnRespawn then
 			Player.Functions.ClearInventory()
 			MySQL.Async.execute('UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode({}), Player.PlayerData.citizenid })
-			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.possessions_taken'), 2000, 0, 'mp_lobby_textures', 'cross')
+			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.possessions_taken'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 		Player.Functions.RemoveMoney("bank", Config.BillCost, "respawned-at-hospital")
 		TriggerEvent('qbr-bossmenu:server:addAccountMoney', "ambulance", Config.BillCost)
@@ -46,7 +46,7 @@ RegisterNetEvent('hospital:server:RespawnAtHospital', function(closestBed)
 		if Config.WipeInventoryOnRespawn then
 			Player.Functions.ClearInventory()
 			MySQL.Async.execute('UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode({}), Player.PlayerData.citizenid })
-			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.possessions_taken'), 2000, 0, 'mp_lobby_textures', 'cross')
+			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.possessions_taken'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 		Player.Functions.RemoveMoney("bank", Config.BillCost, "respawned-at-hospital")
 		TriggerEvent('qbr-bossmenu:server:addAccountMoney', "ambulance", Config.BillCost)
@@ -149,7 +149,7 @@ RegisterNetEvent('hospital:server:RevivePlayer', function(playerId, isOldMan)
 				TriggerClientEvent('inventory:client:ItemBox', src, sharedItems['firstaid'], "remove")
 				TriggerClientEvent('hospital:client:Revive', Patient.PlayerData.source)
 			else
-				TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_enough_money'), 2000, 0, 'mp_lobby_textures', 'cross')
+				TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_enough_money'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 			end
 		else
 			Player.Functions.RemoveItem('firstaid', 1)
@@ -181,7 +181,7 @@ RegisterNetEvent('hospital:server:CanHelp', function(helperId, canHelp)
 	if canHelp then
 		TriggerClientEvent('hospital:client:HelpPerson', helperId, src)
 	else
-		TriggerClientEvent('QBCore:Notify', helperId, Lang:t('error.cant_help'), 2000, 0, 'mp_lobby_textures', 'cross')
+		TriggerClientEvent('QBCore:Notify', helperId, Lang:t('error.cant_help'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 	end
 end)
 
@@ -252,7 +252,7 @@ exports['qbr-core']:AddCommand("status", Lang:t('info.check_health'), {}, false,
 	if Player.PlayerData.job.name == "ambulance" then
 		TriggerClientEvent("hospital:client:CheckStatus", src)
 	else
-		TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_ems'), 2000, 0, 'mp_lobby_textures', 'cross')
+		TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_ems'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 	end
 end)
 
@@ -262,7 +262,7 @@ exports['qbr-core']:AddCommand("heal", Lang:t('info.heal_player'), {}, false, fu
 	if Player.PlayerData.job.name == "ambulance" then
 		TriggerClientEvent("hospital:client:TreatWounds", src)
 	else
-		TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_ems'), 2000, 0, 'mp_lobby_textures', 'cross')
+		TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_ems'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 	end
 end)
 
@@ -272,7 +272,7 @@ exports['qbr-core']:AddCommand("revivep", Lang:t('info.revive_player'), {}, fals
 	if Player.PlayerData.job.name == "ambulance" then
 		TriggerClientEvent("hospital:client:RevivePlayer", src)
 	else
-		TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_ems'), 2000, 0, 'mp_lobby_textures', 'cross')
+		TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_ems'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 	end
 end)
 
@@ -283,7 +283,7 @@ exports['qbr-core']:AddCommand("revive", Lang:t('info.revive_player_a'), {{name 
 		if Player then
 			TriggerClientEvent('hospital:client:Revive', Player.PlayerData.source)
 		else
-			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 2000, 0, 'mp_lobby_textures', 'cross')
+			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 	else
 		TriggerClientEvent('hospital:client:Revive', src)
@@ -297,7 +297,7 @@ exports['qbr-core']:AddCommand("setpain", Lang:t('info.pain_level'), {{name = "i
 		if Player then
 			TriggerClientEvent('hospital:client:SetPain', Player.PlayerData.source)
 		else
-			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 2000, 0, 'mp_lobby_textures', 'cross')
+			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 	else
 		TriggerClientEvent('hospital:client:SetPain', src)
@@ -311,7 +311,7 @@ exports['qbr-core']:AddCommand("kill", Lang:t('info.kill'), {{name = "id", help 
 		if Player then
 			TriggerClientEvent('hospital:client:KillPlayer', Player.PlayerData.source)
 		else
-			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 2000, 0, 'mp_lobby_textures', 'cross')
+			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 	else
 		TriggerClientEvent('hospital:client:KillPlayer', src)
@@ -325,7 +325,7 @@ exports['qbr-core']:AddCommand('aheal', Lang:t('info.heal_player_a'), {{name = '
 		if Player then
 			TriggerClientEvent('hospital:client:adminHeal', Player.PlayerData.source)
 		else
-			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 2000, 0, 'mp_lobby_textures', 'cross')
+			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_online'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 	else
 		TriggerClientEvent('hospital:client:adminHeal', src)

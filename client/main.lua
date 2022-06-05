@@ -157,14 +157,14 @@ local function DoLimbAlert()
             else
                 limbDamageMsg = Lang:t('info.many_places')
             end
-            exports['qbr-core']:Notify(9, limbDamageMsg, 2000, 0, 'blips', 'blip_radius_search')
+            exports['qbr-core']:Notify(9, limbDamageMsg, 5000, 0, 'blips', 'blip_radius_search', 'COLOR_WHITE')
         end
     end
 end
 
 local function DoBleedAlert()
     if not isDead and tonumber(isBleeding) > 0 then
-        exports['qbr-core']:Notify(9, Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[tonumber(isBleeding)].label}), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[tonumber(isBleeding)].label}), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end
 
@@ -421,7 +421,7 @@ local function CheckWeaponDamage(ped)
         if Citizen.InvokeNative(0xDCF06D0CDFF68424, ped, GetHashKey(k), 0) then --HasPedBeenDamagedByWeapon(
             detected = true
             if not IsInDamageList(k) then
-                exports['qbr-core']:Notify(9, Lang:t('info.status')..': '..v, 2000, 0, 'mp_lobby_textures', 'cross')
+                exports['qbr-core']:Notify(9, Lang:t('info.status')..': '..v, 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                 CurrentDamageList[#CurrentDamageList+1] = k
             end
         end
@@ -620,10 +620,10 @@ RegisterNetEvent('ambulance:client:promptCheckin', function()
 
                 TriggerServerEvent("hospital:server:SendToBed", bedId, true)
             else
-                exports['qbr-core']:Notify(9, Lang:t('error.beds_taken'), 2000, 0, 'mp_lobby_textures', 'cross')
+                exports['qbr-core']:Notify(9, Lang:t('error.beds_taken'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         end, function() -- Cancel
-            exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
+            exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
         end)
     end
 end)
@@ -632,7 +632,7 @@ RegisterNetEvent('ambulance:client:promptBed',function()
     if GetAvailableBed(closestBed) then
         TriggerServerEvent("hospital:server:SendToBed", closestBed, true)
     else
-        exports['qbr-core']:Notify(9, Lang:t('error.beds_taken'), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('error.beds_taken'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
@@ -682,7 +682,7 @@ RegisterNetEvent('hospital:client:Revive', function()
     TriggerServerEvent("hospital:server:SetDeathStatus", false)
     TriggerServerEvent("hospital:server:SetLaststandStatus", false)
     emsNotified = false
-    exports['qbr-core']:Notify(9, Lang:t('info.healthy'), 2000, 0, 'blips', 'blip_radius_search')
+    exports['qbr-core']:Notify(9, Lang:t('info.healthy'), 5000, 0, 'blips', 'blip_radius_search', 'COLOR_WHITE')
 end)
 
 RegisterNetEvent('hospital:client:SetPain', function()
@@ -724,7 +724,7 @@ RegisterNetEvent('hospital:client:HealInjuries', function(type)
         ResetPartial()
     end
     TriggerServerEvent("hospital:server:RestoreWeaponDamage")
-    exports['qbr-core']:Notify(9, Lang:t('success.wounds_healed'), 2000, 0, 'hud_textures', 'check')
+    exports['qbr-core']:Notify(9, Lang:t('success.wounds_healed'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
 end)
 
 RegisterNetEvent('hospital:client:SendToBed', function(id, data, isRevive)
@@ -734,7 +734,7 @@ RegisterNetEvent('hospital:client:SendToBed', function(id, data, isRevive)
     CreateThread(function ()
         Wait(5)
         if isRevive then
-            exports['qbr-core']:Notify(9, Lang:t('success.being_helped'), 2000, 0, 'hud_textures', 'check')
+            exports['qbr-core']:Notify(9, Lang:t('success.being_helped'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
             Wait(Config.AIHealTimer * 1000)
             TriggerEvent("hospital:client:Revive")
         else

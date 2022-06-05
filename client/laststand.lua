@@ -92,7 +92,7 @@ function SetLaststand(bool, spawn)
                     LaststandTime = LaststandTime - 1
                     Config.DeathTime = LaststandTime
                 elseif LaststandTime - 1 <= 0 then
-                    exports['qbr-core']:Notify(9, Lang:t('error.bled_out'), 2000, 0, 'mp_lobby_textures', 'cross')
+                    exports['qbr-core']:Notify(9, Lang:t('error.bled_out'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                     SetLaststand(false)
                     local killer_2, killerWeapon = NetworkGetEntityKillerOfPlayer(player)
                     local killer = GetPedSourceOfDeath(ped)
@@ -144,7 +144,7 @@ RegisterNetEvent('hospital:client:UseFirstAid', function()
             TriggerServerEvent('hospital:server:UseFirstAid', playerId)
         end
     else
-        exports['qbr-core']:Notify(9, Lang:t('error.impossible'), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('error.impossible'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
@@ -175,11 +175,11 @@ RegisterNetEvent('hospital:client:HelpPerson', function(targetId)
     }, {}, {}, function() -- Done
         isHealingPerson = false
         ClearPedTasks(ped)
-        exports['qbr-core']:Notify(9, Lang:t('success.revived'), 2000, 0, 'hud_textures', 'check')
+        exports['qbr-core']:Notify(9, Lang:t('success.revived'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
         TriggerServerEvent("hospital:server:RevivePlayer", targetId)
     end, function() -- Cancel
         isHealingPerson = false
         ClearPedTasks(ped)
-        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end)
 end)
