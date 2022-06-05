@@ -51,10 +51,11 @@ function TakeOutVehicle(vehicleInfo)
     exports['qbr-core']:SpawnVehicle(vehicleInfo, function(veh)
         SetEntityHeading(veh, coords.w)
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
+	Citizen.InvokeNative(0x400F9556,veh, Lang:t('info.amb_plate')..tostring(math.random(1000, 9999)))
         -- if Config.VehicleSettings[vehicleInfo] ~= nil then
         --     QBCore.Shared.SetDefaultVehicleExtras(veh, Config.VehicleSettings[vehicleInfo].extras)
         -- end
-        TriggerEvent("vehiclekeys:client:SetOwner", exports['qbr-core']:GetPlate(veh))
+        --TriggerEvent("vehiclekeys:client:SetOwner", exports['qbr-core']:GetPlate(veh))
         SetVehicleEngineOn(veh, true, true)
     end, coords, true)
 end
