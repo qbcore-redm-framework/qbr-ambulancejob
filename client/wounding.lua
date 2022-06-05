@@ -12,7 +12,7 @@ local PainkillersAnim = "bandage_start"
 -- Functions
 local function DoBleedAlert()
     if not isDead and tonumber(isBleeding) > 0 then
-        exports['qbr-core']:Notify(9, "You are "..Config.BleedingStates[tonumber(isBleeding)].label, 5000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, "You are "..Config.BleedingStates[tonumber(isBleeding)].label, 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end
 
@@ -66,7 +66,7 @@ RegisterNetEvent('hospital:client:UseIfaks', function()
         end
     end, function() -- Cancel
         StopAnimTask(ped, IfaksDict, IfaksAnim, 1.0)
-        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end)
 end)
 
@@ -94,7 +94,7 @@ RegisterNetEvent('hospital:client:UseBandage', function()
         end
     end, function() -- Cancel
         StopAnimTask(ped, BandageDict, BandageAnim, 1.0)
-        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end)
 end)
 
@@ -119,7 +119,7 @@ RegisterNetEvent('hospital:client:UsePainkillers', function()
         end
     end, function() -- Cancel
         StopAnimTask(ped, PainkillersDict, PainkillersAnim, 1.0)
-        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
+        exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end)
 end)
 
