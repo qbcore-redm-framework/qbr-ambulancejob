@@ -640,14 +640,14 @@ RegisterNetEvent('hospital:client:ambulanceAlert', function(coords, text)
     exports['qbr-core']:Notify(9, text, "ambulance")
     local transG = 250
     local blipText = Lang:t('info.ems_alert', {text = text})
-    local blip = N_0x554d9d53f696d002(1664425300, coords.x, coords.y, coords.z) --AddBlip
+    local blip = N_0x554d9d53f696d002(1664425300, coords.x, coords.y, coords.z) -- AddBlip
     SetBlipSprite(blip, 960467426, 1)
     SetBlipScale(blip, 0.2)
-    Citizen.InvokeNative(0x9CB1A1623062F402, blip, text) --SetBlipName
+    Citizen.InvokeNative(0x9CB1A1623062F402, blip, text) -- SetBlipName()
     while transG ~= 0 do
         Wait(Config.DispatchTimer * 4)
         transG = transG - 1
-        --Citizen.InvokeNative(0x45FF974EEE1C8734, blip, transG) --SetBlipAlpha
+        --Citizen.InvokeNative(0x45FF974EEE1C8734, blip, transG) -- SetBlipAlpha()
         if transG == 0 then
             RemoveBlip(blip)
             return
