@@ -33,7 +33,7 @@ RegisterNetEvent('hospital:server:RespawnAtHospital', function(closestBed)
 		TriggerClientEvent('hospital:client:SetBed', -1, closestBed, true)
 		if Config.WipeInventoryOnRespawn then
 			Player.Functions.ClearInventory()
-			MySQL.Async.execute('UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode({}), Player.PlayerData.citizenid })
+			MySQL.query('UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode({}), Player.PlayerData.citizenid })
 			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.possessions_taken'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 		Player.Functions.RemoveMoney("bank", Config.BillCost, "respawned-at-hospital")
@@ -45,7 +45,7 @@ RegisterNetEvent('hospital:server:RespawnAtHospital', function(closestBed)
 		TriggerClientEvent('hospital:client:SetBed', -1, 1, true)
 		if Config.WipeInventoryOnRespawn then
 			Player.Functions.ClearInventory()
-			MySQL.Async.execute('UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode({}), Player.PlayerData.citizenid })
+			MySQL.query('UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode({}), Player.PlayerData.citizenid })
 			TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.possessions_taken'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 		end
 		Player.Functions.RemoveMoney("bank", Config.BillCost, "respawned-at-hospital")
