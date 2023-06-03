@@ -580,7 +580,7 @@ local function ProcessDamage(ped)
                     local chance = math.random(100)
 
                     if chance <= Config.HeadInjuryChance then
-                        SetFlash(0, 0, 100, 10000, 100)
+                        --SetFlash(0, 0, 100, 10000, 100) This Breaks As is For Fivem Only
 
                         DoScreenFadeOut(100)
                         while not IsScreenFadedOut() do
