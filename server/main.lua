@@ -163,7 +163,7 @@ RegisterNetEvent('hospital:server:SendDoctorAlert', function()
     local players = exports['qbr-core']:GetQBPlayers()
     for k,v in pairs(players) do
         if v.PlayerData.job.name == 'ambulance' and v.PlayerData.job.onduty then
-			TriggerClientEvent('QBCore:Notify', v.PlayerData.source, Lang:t('info.dr_needed'), 'ambulance')
+			TriggerClientEvent('QBCore:Notify', v.PlayerData.source, 9, Lang:t('info.dr_needed'), 'ambulance')
 		end
 	end
 end)
@@ -181,7 +181,7 @@ RegisterNetEvent('hospital:server:CanHelp', function(helperId, canHelp)
 	if canHelp then
 		TriggerClientEvent('hospital:client:HelpPerson', helperId, src)
 	else
-		TriggerClientEvent('QBCore:Notify', helperId, Lang:t('error.cant_help'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
+		TriggerClientEvent('QBCore:Notify', helperId, 9, Lang:t('error.cant_help'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 	end
 end)
 
